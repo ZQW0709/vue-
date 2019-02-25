@@ -89,16 +89,66 @@ export const asyncRouterMap = [
   /** When your routing table is too long, you can split it into small modules**/
   // componentsRouter,
   nestedRouter,
+  // {
+  //   path: '/class',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   children: [
+  //     {
+  //       path: 'log',
+  //       component: () => import('@/views/class/index'),
+  //       name: 'classMane',
+  //       meta: { title: '班级管理', icon: 'bug' }
+  //     }
+  //   ]
+  // },
   {
     path: '/class',
     component: Layout,
     redirect: 'noredirect',
     children: [
       {
-        path: 'log',
+        path: 'index',
         component: () => import('@/views/class/index'),
         name: 'classMane',
         meta: { title: '班级管理', icon: 'bug' }
+      }
+    ]
+  },
+
+  {
+    path: '/student',
+    component: Layout,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/student/index'),
+        name: 'studentmane',
+        meta: { title: '学生管理', icon: 'edit' }
+      }
+    ]
+  },
+  {
+    path: '/problem',
+    component: Layout,
+    redirect: 'noredirect',
+    meta: {
+      title: '题库管理',
+      icon: '404'
+    },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/problem/index'),
+        name: 'probletype',
+        meta: { title: '题目类型管理', icon: 'bug' }
+      },
+      {
+        path: 'info',
+        component: () => import('@/views/problem/info'),
+        name: 'infomanage',
+        meta: { title: '题目信息管理', icon: 'bug' }
       }
     ]
   },
