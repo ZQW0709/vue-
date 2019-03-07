@@ -36,7 +36,7 @@ export function deleteexamtype(params) {   //删除题目类型
   })
 }
 
-export function getExaminfoList(params) {   //获取题目
+export function   getExaminfoList(params) {   //获取题目
   const url = 'http://localhost:9527/getExaminfoList'
   return axios.post(url, params, {
     headers: {
@@ -71,3 +71,4 @@ export function addExaminfo(params) {   //添加题目
     }
   })
 }
+
