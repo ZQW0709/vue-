@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export function getClassmanageList(params) {  //获取班级列表
+export function getClassmanageList(params) {    //获取班级列表
   const url = 'http://localhost:9527/getClassmanageList'
   return axios.post(url, params, {
     headers: {
