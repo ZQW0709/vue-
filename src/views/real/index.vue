@@ -33,9 +33,9 @@
             style="white-space:normal; display:inline;word-break:break-all; word-wrap:break-word;"
           >
             <div style="margin: 2px 0 0 12px;">
-              <time 
-class="time" 
-style="font-size: 8px;"
+              <time
+                class="time"
+                style="font-size: 8px;"
               >{{ message.nickName }}&nbsp;&nbsp;&nbsp;{{ message.time }}
                 <el-card
                   shadow="always"
@@ -53,9 +53,9 @@ style="font-size: 8px;"
             style="text-align: right; white-space:normal; display:inline;word-break:break-all; word-wrap:break-word;"
           >
             <div style="margin: 2px 12px 0 0;">
-              <time 
-class="time" 
-style="font-size: 8px;"
+              <time
+                class="time"
+                style="font-size: 8px;"
               >{{ message.time }}&nbsp;&nbsp;&nbsp;{{ message.nickName }}
               </time>
               <el-card
@@ -75,14 +75,39 @@ style="font-size: 8px;"
         </div>
       </el-main>
       <el-footer style="width: 100%; height: 450px;  bottom: 0;">
-        <!-- <el-input
-          type="textarea"
-          :rows="3"
-          style="margin: 10px;"
-          placeholder="请输入内容"
-          @keyup.ctrl.enter.native="sendMessage"
-          v-model="textarea">
-        </el-input> -->
+        <el-form :inline="true" :model="formInline" class="demo-form-inline" style="margin-top:10px">
+          <el-form-item label="题目类型">
+            <el-select v-model="formInline.examtype" placeholder="题目类型">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="题目状态">
+            <el-select v-model="formInline.examstatus" placeholder="题目状态">
+              <el-option
+                v-for="item in examOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
+          </el-form-item>
+        </el-form>
+        <div class="block">
+          <el-pagination
+            :current-page.sync="page"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="100"
+            :total="total"
+            layout="sizes, prev, pager, next"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange" />
+        </div>
         <el-table
           :data="tableData"
           stripe
@@ -103,6 +128,17 @@ style="font-size: 8px;"
           <el-table-column prop="correctanswer" label="答案" align="center" />
           <el-table-column prop="explaininfo" label="解释说明" align="center" />
           <el-table-column
+            label="状态"
+            prop="status"
+            align="center"
+            width="100px">
+            <template slot-scope="scope">
+              <el-tag :type="scope.row.status | statusFilter">{{
+                scope.row.status | statucZhFilter
+              }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column
             fixed="right"
             label="操作"
             width="200"
@@ -121,6 +157,7 @@ style="font-size: 8px;"
             </template>
           </el-table-column>
         </el-table>
+
       </el-footer>
     </el-container>
   </el-container>
@@ -135,8 +172,36 @@ import {
 import qs from 'qs'
 
 export default {
+  filters: {
+    statusFilter(status) {
+      const typeMap = {
+        0: 'warning',
+        1: ''
+      }
+      return typeMap[status] || '未知类型'
+    },
+    statucZhFilter(status) {
+      const typeMap = {
+        0: '隐藏',
+        1: '发布'
+      }
+      return typeMap[status] || '未知类型'
+    }
+  },
   data() {
     return {
+      formInline: {
+        examtype: '',
+        examstatus: 0
+      },
+      options: [],
+      examOptions: [{
+        value: 1,
+        label: '发布'
+      }, {
+        value: 0,
+        label: '隐藏'
+      }],
       nickName: '',
       showSetNick: false,
       webSocket: null,
@@ -146,6 +211,7 @@ export default {
       useBy: '', // 手机或电脑
       page: 1,
       limit: [10, 20, 30, 40],
+      total: 0,
       pageLimit: 10,
       tableData: []
     }
@@ -179,11 +245,47 @@ export default {
       limit: this.pageLimit
     }
     this.getProblemList(params)
+    getAllexamtype().then(res => {
+      const obj = res.data
+
+      this.options = []
+      for (let i = 0; i < obj.length; i++) {
+        const tempList = {}
+        tempList.value = obj[i].id
+        tempList.label = obj[i].name
+        this.options.push(tempList)
+      }
+    })
   },
   destroyed() {
     this.webSocket.close()
   },
   methods: {
+    onSubmit() {
+      const params = {
+        page: 1,
+        limit: 10,
+        examtypestatus: this.formInline.examstatus,
+        examtypeid: this.formInline.examtype
+      }
+      this.getProblemList(params)
+    },
+    handleSizeChange(val) {
+      this.pageLimit = val
+      const params = {
+        page: this.page,
+        limit: this.pageLimit
+      }
+      this.getProblemList(params)
+    },
+    handleCurrentChange(val) {
+      this.page = val
+      const params = {
+        page: this.page,
+        limit: this.pageLimit
+      }
+      this.getProblemList(params)
+    },
     getProblemList(params) { // 获取题目
       params = qs.stringify(params)
       getExaminfoList(params).then(res => {
@@ -204,6 +306,7 @@ export default {
           tempList.correctanswer = obj[i].correctanswer
           tempList.explaininfo = obj[i].explaininfo
           tempList.examtypeid = obj[i].examtypeid
+          tempList.status = obj[i].examtypestatus
           this.tableData.push(tempList)
         }
       })

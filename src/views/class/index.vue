@@ -35,9 +35,10 @@
       <el-table-column fixed="right" label="操作" width="300" align="center">
         <template slot-scope="scope">
           <el-button size="small" @click="openEdit(scope.row)">编辑</el-button>
-          <el-button 
-size="small" 
-type="danger" @click="confirmDele(scope.row)"
+          <el-button
+            size="small"
+            type="danger"
+            @click="confirmDele(scope.row)"
           >删除</el-button
           >
         </template>

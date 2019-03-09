@@ -1,38 +1,85 @@
 <template>
   <div class="app-container">
     <div>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form
+        :inline="true"
+        :model="formInline"
+        class="demo-form-inline">
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">新增</el-button>
+          <el-button
+            type="primary"
+            @click="onSubmit">新增</el-button>
         </el-form-item>
         <el-form-item>
           <el-button
             style="margin:0 0 20px 20px;"
             type="primary"
             icon="document"
-            @click="handleDownload"
-          >导出Excel</el-button
-          >
+            @click="handleDownload">导出Excel</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <el-table :data="tableData" stripe border style="width: 100%">
-      <el-table-column prop="examtypename" label="题目类型" align="center" />
-      <el-table-column prop="name" label="题目名称" align="center" />
-      <el-table-column prop="a" label="选项A" align="center" />
-      <el-table-column prop="b" label="选项B" align="center" />
-      <el-table-column prop="c" label="选项C" align="center" />
-      <el-table-column prop="d" label="选项D" align="center" />
-      <el-table-column prop="correctanswer" label="答案" align="center" />
-      <el-table-column prop="explaininfo" label="解释说明" align="center" />
-      <el-table-column fixed="right" label="操作" width="200" align="center">
+    <el-table
+      :data="tableData"
+      stripe
+      border
+      style="width: 100%">
+      <el-table-column
+        prop="examtypename"
+        label="题目类型"
+        align="center" />
+      <el-table-column
+        prop="name"
+        label="题目名称"
+        align="center" />
+      <el-table-column
+        prop="a"
+        label="选项A"
+        align="center" />
+      <el-table-column
+        prop="b"
+        label="选项B"
+        align="center" />
+      <el-table-column
+        prop="c"
+        label="选项C"
+        align="center" />
+      <el-table-column
+        prop="d"
+        label="选项D"
+        align="center" />
+      <el-table-column
+        prop="correctanswer"
+        label="答案"
+        align="center" />
+      <el-table-column
+        prop="explaininfo"
+        label="解释说明"
+        align="center" />
+      <el-table-column
+        label="状态"
+        prop="status"
+        align="center"
+        width="100px">
         <template slot-scope="scope">
-          <el-button size="small" @click="openEdit(scope.row)">编辑</el-button>
-          <el-button 
-size="small" 
-type="danger" @click="confirmDele(scope.row)"
-          >删除</el-button
-          >
+          <el-tag :type="scope.row.status | statusFilter">{{
+            scope.row.status | statucZhFilter
+          }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="200"
+        align="center">
+        <template slot-scope="scope">
+          <el-button
+            size="small"
+            @click="openEdit(scope.row)">编辑</el-button>
+          <el-button
+            size="small"
+            type="danger"
+            @click="confirmDele(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -44,25 +91,26 @@ type="danger" @click="confirmDele(scope.row)"
         :total="total"
         layout="sizes, prev, pager, next"
         @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+        @current-change="handleCurrentChange" />
     </div>
 
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogFormVisible"
       center
-      width="500px"
-    >
-      <el-form :model="form" label-width="120px">
+      width="500px">
+      <el-form
+        :model="form"
+        label-width="120px">
         <el-form-item label="题目类型名称">
-          <el-select v-model="form.examtypeid" placeholder="请选择">
+          <el-select
+            v-model="form.examtypeid"
+            placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.value"
               :label="item.label"
-              :value="item.value"
-            />
+              :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="题目">
@@ -70,20 +118,27 @@ type="danger" @click="confirmDele(scope.row)"
             :rows="2"
             v-model="form.name"
             type="textarea"
-            placeholder="请输入内容"
-          />
+            placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="选项A">
-          <el-input v-model="form.a" autocomplete="off" />
+          <el-input
+            v-model="form.a"
+            autocomplete="off" />
         </el-form-item>
         <el-form-item label="选项B">
-          <el-input v-model="form.b" autocomplete="off" />
+          <el-input
+            v-model="form.b"
+            autocomplete="off" />
         </el-form-item>
         <el-form-item label="选项C">
-          <el-input v-model="form.c" autocomplete="off" />
+          <el-input
+            v-model="form.c"
+            autocomplete="off" />
         </el-form-item>
         <el-form-item label="选项D">
-          <el-input v-model="form.d" autocomplete="off" />
+          <el-input
+            v-model="form.d"
+            autocomplete="off" />
         </el-form-item>
         <el-form-item label="答案">
           <div>
@@ -91,9 +146,7 @@ type="danger" @click="confirmDele(scope.row)"
               <el-checkbox-button
                 v-for="answer in answers"
                 :label="answer"
-                :key="answer"
-              >{{ answer }}</el-checkbox-button
-              >
+                :key="answer">{{ answer }}</el-checkbox-button>
             </el-checkbox-group>
           </div>
         </el-form-item>
@@ -102,13 +155,16 @@ type="danger" @click="confirmDele(scope.row)"
             :rows="2"
             v-model="form.explaininfo"
             type="textarea"
-            placeholder="请输入内容"
-          />
+            placeholder="请输入内容" />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editClass()">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="editClass()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -124,6 +180,22 @@ import {
 
 import qs from 'qs'
 export default {
+  filters: {
+    statusFilter(status) {
+      const typeMap = {
+        0: 'warning',
+        1: ''
+      }
+      return typeMap[status] || '未知类型'
+    },
+    statucZhFilter(status) {
+      const typeMap = {
+        0: '隐藏',
+        1: '发布'
+      }
+      return typeMap[status] || '未知类型'
+    }
+  },
   data() {
     return {
       tableData: [],
@@ -263,7 +335,6 @@ export default {
         this.total = res.data.count
         const obj = res.data.data
         this.list = res.data.data
-        const i = 0
         this.tableData = []
         for (let i = 0; i < obj.length; i++) {
           const tempList = {}
@@ -274,6 +345,8 @@ export default {
           tempList.b = obj[i].b
           tempList.c = obj[i].c
           tempList.d = obj[i].d
+          tempList.status = obj[i].examtypestatus
+
           tempList.correctanswer = obj[i].correctanswer
           tempList.explaininfo = obj[i].explaininfo
           tempList.examtypeid = obj[i].examtypeid

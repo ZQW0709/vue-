@@ -1,5 +1,4 @@
 
-
 <script>
 import { mapGetters } from 'vuex'
 import adminDashboard from './admin'

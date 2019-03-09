@@ -1,7 +1,10 @@
 <template>
   <div class="app-container">
     <div>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form
+        :inline="true"
+        :model="formInline"
+        class="demo-form-inline">
         <!-- <el-form-item label="班级名称">
     <el-input v-model="formInline.user" placeholder="班级名称"></el-input>
   </el-form-item>
@@ -15,20 +18,50 @@
         </el-select>-->
         <el-form-item>
           <!-- <el-button type="primary" @click="onSubmit">查询</el-button> -->
-          <el-button type="primary" @click="onSubmit">新增</el-button>
+          <el-button
+            type="primary"
+            @click="onSubmit">新增</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <el-table :data="tableData" stripe border style="width: 100%">
-      <el-table-column prop="name" label="姓名" align="center" />
-      <el-table-column fixed="right" label="操作" width="200" align="center">
+    <el-table
+      :data="tableData"
+      stripe
+      border
+      style="width: 100%">
+      <el-table-column
+        prop="name"
+        label="姓名"
+        align="center" />
+      <el-table-column
+        label="状态"
+        prop="status"
+        align="center"
+        width="100px">
         <template slot-scope="scope">
-          <el-button size="small" @click="openEdit(scope.row)">编辑</el-button>
-          <el-button 
-size="small" 
-type="danger" @click="confirmDele(scope.row)"
-          >删除</el-button
-          >
+          <el-tag :type="scope.row.status | statusFilter">{{
+            scope.row.status | statucZhFilter
+          }}</el-tag>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column
+        prop="status"
+        label="状态"
+        align="center"
+        width="100px" /> -->
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="200"
+        align="center">
+        <template slot-scope="scope">
+          <el-button
+            size="small"
+            @click="openEdit(scope.row)">编辑</el-button>
+          <el-button
+            size="small"
+            type="danger"
+            @click="confirmDele(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -40,24 +73,41 @@ type="danger" @click="confirmDele(scope.row)"
         :total="total"
         layout="sizes, prev, pager, next"
         @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+        @current-change="handleCurrentChange" />
     </div>
 
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogFormVisible"
       center
-      width="300px"
-    >
+      width="300px">
       <el-form :model="form">
-        <el-form-item label="题目类型名称" label-width="150px">
-          <el-input v-model="form.name" autocomplete="off" />
+        <el-form-item
+          label="题目类型名称"
+          label-width="150px">
+          <el-input
+            v-model="form.name"
+            autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="题目类型状态" label-width="150px">
+          <el-select
+            v-model="form.status"
+            placeholder="请选择">
+            <el-option
+              v-for="item in StatusOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value" />
+          </el-select>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editClass()">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="editClass()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -73,10 +123,32 @@ import {
 
 import qs from 'qs'
 export default {
+  filters: {
+    statusFilter(status) {
+      const typeMap = {
+        0: 'warning',
+        1: ''
+      }
+      return typeMap[status] || '未知类型'
+    },
+    statucZhFilter(status) {
+      const typeMap = {
+        0: '隐藏',
+        1: '发布'
+      }
+      return typeMap[status] || '未知类型'
+    }
+  },
   data() {
     return {
       tableData: [],
-      options: [],
+      StatusOptions: [{
+        value: 0,
+        label: '隐藏'
+      }, {
+        value: 1,
+        label: '发布'
+      }],
       classOptions: [],
       value: '',
       isAdd: false,
@@ -86,7 +158,8 @@ export default {
       total: 0,
       form: {
         id: 0,
-        name: ''
+        name: '',
+        status: 0
       },
       formInline: {
         user: '',
@@ -164,12 +237,12 @@ export default {
         console.log(res.data)
         this.total = res.data.count
         const obj = res.data.data
-        const i = 0
+        // const i = 0
         this.tableData = []
         for (let i = 0; i < obj.length; i++) {
           const tempList = {}
           tempList.id = obj[i].id
-
+          tempList.status = obj[i].status
           tempList.name = obj[i].name
           this.tableData.push(tempList)
         }
@@ -181,11 +254,13 @@ export default {
       this.dialogFormVisible = true
       this.form.id = row.id
       this.form.name = row.name
+      this.form.status = row.status
     },
     editClass() {
       if (this.isAdd) {
         let params = {
-          name: this.form.name
+          name: this.form.name,
+          status: this.form.status
         }
         params = qs.stringify(params)
         addexamtype(params).then(res => {
@@ -195,7 +270,8 @@ export default {
       } else {
         let params = {
           id: this.form.id,
-          name: this.form.name
+          name: this.form.name,
+          status: this.form.status
         }
         params = qs.stringify(params)
         updateexamtype(params)

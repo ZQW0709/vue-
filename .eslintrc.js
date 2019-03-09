@@ -50,10 +50,9 @@ module.exports = {
       'after': true
     }],
     'handle-callback-err': [2, '^(err|error)$'],
-    // 'indent': [2, 2, {
-    //   'SwitchCase': 1
-    // }],
-    "indent": ["off", 2],
+    'indent': [2, 2, {
+      'SwitchCase': 1
+    }],
     'jsx-quotes': [2, 'prefer-single'],
     'key-spacing': [2, {
       'beforeColon': false,
@@ -74,7 +73,7 @@ module.exports = {
     'no-class-assign': 2,
     'no-cond-assign': 2,
     'no-const-assign': 2,
-    'no-control-regex': 0,
+    'no-control-regex': 2,
     'no-delete-var': 2,
     'no-dupe-args': 2,
     'no-dupe-class-members': 2,

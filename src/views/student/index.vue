@@ -1,7 +1,10 @@
 <template>
   <div class="app-container">
     <div>
-      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form
+        :inline="true"
+        :model="formInline"
+        class="demo-form-inline">
         <!-- <el-form-item label="班级名称">
     <el-input v-model="formInline.user" placeholder="班级名称"></el-input>
   </el-form-item>
@@ -15,29 +18,59 @@
         </el-select>-->
         <el-form-item>
           <!-- <el-button type="primary" @click="onSubmit">查询</el-button> -->
-          <el-button type="primary" @click="onSubmit">新增</el-button>
+          <el-button
+            type="primary"
+            @click="onSubmit">新增</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <el-table :data="tableData" stripe border style="width: 100%">
-      <el-table-column prop="stuname" label="姓名" align="center" />
-      <el-table-column prop="classinfoname" label="班级名称" />
-      <el-table-column prop="campusname" label="所属学校" />
-      <el-table-column prop="isSex" label="性别" />
-      <el-table-column prop="login" label="账号" />
-      <el-table-column prop="profession" label="专业" />
-      <el-table-column prop="phone" label="联系方式" />
+    <el-table
+      :data="tableData"
+      stripe
+      border
+      style="width: 100%">
+      <el-table-column
+        prop="stuname"
+        label="姓名"
+        align="center" />
+      <el-table-column
+        prop="classinfoname"
+        label="班级名称" />
+      <el-table-column
+        prop="campusname"
+        label="所属学校" />
+      <el-table-column
+        prop="isSex"
+        label="性别" />
+      <el-table-column
+        prop="login"
+        label="账号" />
+      <el-table-column
+        prop="profession"
+        label="专业" />
+      <el-table-column
+        prop="phone"
+        label="联系方式" />
 
-      <el-table-column prop="lecturer" label="上课教师" />
-      <el-table-column prop="teacher" label="班导" />
-      <el-table-column fixed="right" label="操作" width="200" align="center">
+      <el-table-column
+        prop="lecturer"
+        label="上课教师" />
+      <el-table-column
+        prop="teacher"
+        label="班导" />
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="200"
+        align="center">
         <template slot-scope="scope">
-          <el-button size="small" @click="openEdit(scope.row)">编辑</el-button>
-          <el-button 
-size="small" 
-type="danger" @click="confirmDele(scope.row)"
-          >删除</el-button
-          >
+          <el-button
+            size="small"
+            @click="openEdit(scope.row)">编辑</el-button>
+          <el-button
+            size="small"
+            type="danger"
+            @click="confirmDele(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -49,60 +82,100 @@ type="danger" @click="confirmDele(scope.row)"
         :total="total"
         layout="sizes, prev, pager, next"
         @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+        @current-change="handleCurrentChange" />
     </div>
 
-    <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" center>
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogFormVisible"
+      center>
       <el-form :model="form">
-        <el-form-item :label-width="formLabelWidth" label="姓名">
-          <el-input v-model="form.stuname" autocomplete="off" />
+        <el-form-item
+          :label-width="formLabelWidth"
+          label="姓名">
+          <el-input
+            v-model="form.stuname"
+            autocomplete="off" />
         </el-form-item>
-        <el-form-item :label-width="formLabelWidth" label="所属学校">
-          <el-select v-model="form.campusid" placeholder="请选择">
+        <el-form-item
+          :label-width="formLabelWidth"
+          label="所属学校">
+          <el-select
+            v-model="form.campusid"
+            placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.value"
               :label="item.label"
-              :value="item.value"
-            />
+              :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item :label-width="formLabelWidth" label="班级名称">
-          <el-select v-model="form.classinfoid" placeholder="请选择">
+        <el-form-item
+          :label-width="formLabelWidth"
+          label="班级名称">
+          <el-select
+            v-model="form.classinfoid"
+            placeholder="请选择">
             <el-option
               v-for="item in classOptions"
               :key="item.value"
               :label="item.label"
-              :value="item.value"
-            />
+              :value="item.value" />
           </el-select>
         </el-form-item>
         <!-- <el-form-item label="班级名称" :label-width="formLabelWidth">
           <el-input v-model="form.classinfoname" autocomplete="off"></el-input>
         </el-form-item>-->
-        <el-form-item :label-width="formLabelWidth" label="性别">
-          <el-input v-model="form.sex" autocomplete="off" />
+        <el-form-item
+          :label-width="formLabelWidth"
+          label="性别">
+          <el-input
+            v-model="form.sex"
+            autocomplete="off" />
         </el-form-item>
-        <el-form-item :label-width="formLabelWidth" label="账号">
-          <el-input v-model="form.login" autocomplete="off" />
+        <el-form-item
+          :label-width="formLabelWidth"
+          label="账号">
+          <el-input
+            v-model="form.login"
+            autocomplete="off" />
         </el-form-item>
-        <el-form-item :label-width="formLabelWidth" label="专业">
-          <el-input v-model="form.profession" autocomplete="off" />
+        <el-form-item
+          :label-width="formLabelWidth"
+          label="专业">
+          <el-input
+            v-model="form.profession"
+            autocomplete="off" />
         </el-form-item>
-        <el-form-item :label-width="formLabelWidth" label="联系方式">
-          <el-input v-model="form.phone" autocomplete="off" />
+        <el-form-item
+          :label-width="formLabelWidth"
+          label="联系方式">
+          <el-input
+            v-model="form.phone"
+            autocomplete="off" />
         </el-form-item>
-        <el-form-item :label-width="formLabelWidth" label="上课教师">
-          <el-input v-model="form.lecturer" autocomplete="off" />
+        <el-form-item
+          :label-width="formLabelWidth"
+          label="上课教师">
+          <el-input
+            v-model="form.lecturer"
+            autocomplete="off" />
         </el-form-item>
-        <el-form-item :label-width="formLabelWidth" label="班导">
-          <el-input v-model="form.teacher" autocomplete="off" />
+        <el-form-item
+          :label-width="formLabelWidth"
+          label="班导">
+          <el-input
+            v-model="form.teacher"
+            autocomplete="off" />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div
+        slot="footer"
+        class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editClass()">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="editClass()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -145,9 +218,7 @@ export default {
         login: '',
         phone: '',
         profession: '',
-        sex: '',
-        lecturer: '',
-        teacher: ''
+        sex: ''
       },
       formInline: {
         user: '',
