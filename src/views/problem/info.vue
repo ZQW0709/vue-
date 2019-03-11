@@ -17,6 +17,9 @@
             icon="document"
             @click="handleDownload">导出Excel</el-button>
         </el-form-item>
+        <el-form-item>
+         <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload"/>
+        </el-form-item>
       </el-form>
     </div>
     <el-table
@@ -167,10 +170,21 @@
           @click="editClass()">确 定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="导入EXCEL表格" :visible.sync="dialogTableVisible" >
+  <el-table :data="ExcelTableData" border highlight-current-row style="width: 100%;margin-top:20px;" height="600">
+      <el-table-column v-for="item of tableHeader" :prop="item" :label="item" :key="item"/>
+    </el-table>
+</el-dialog>
+
+
+
+
   </div>
 </template>
 
 <script>
+import UploadExcelComponent from '@/components/UploadExcel/index.vue'   //导入上传表格的组件
 import {
   getExaminfoList,
   getAllexamtype,
@@ -231,9 +245,13 @@ export default {
       downloadLoading: false,
       filename: '题目列表',
       autoWidth: true,
-      bookType: 'xlsx'
+      bookType: 'xlsx',
+      ExcelTableData: [],  //表格数据
+      tableHeader: [],  //头部
+      dialogTableVisible:false
     }
   },
+  components: { UploadExcelComponent },
   created() {
     this.getProblemList()
     getAllexamtype().then(res => {
@@ -249,6 +267,24 @@ export default {
     })
   },
   methods: {
+    beforeUpload(file) {    //限制大小
+      const isLt1M = file.size / 1024 / 1024 < 1
+
+      if (isLt1M) {
+        return true
+      }
+
+      this.$message({
+        message: 'Please do not upload files larger than 1m in size.',
+        type: 'warning'
+      })
+      return false
+    },
+    handleSuccess({ results, header }) {   //选取成功
+      this.ExcelTableData = results
+      this.tableHeader = header
+      this.dialogTableVisible = true
+    },
     handleDownload() {
       import('@/vendor/Export2Excel').then(excel => {
         const tHeader = ['题目类型ID', '题目类型名称', '题目内容', '选项A', '选项B', '选项C', '选项D', '答案', '解释说明']
