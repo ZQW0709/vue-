@@ -72,3 +72,21 @@ export function addExaminfo(params) { // 添加题目
   })
 }
 
+export function delExaminfo(params) { // 删除题目
+  const url = 'http://localhost:9527/delExaminfo'
+  return axios.post(url, params, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+export function addExamInfoForExcel(params) { // 批量添加题目
+  const url = 'http://localhost:9527/addExamInfoForExcel'
+  return axios.post(url, params, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+

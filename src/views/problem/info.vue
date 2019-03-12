@@ -18,7 +18,7 @@
             @click="handleDownload">导出Excel</el-button>
         </el-form-item>
         <el-form-item>
-         <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload"/>
+          <upload-excel-component :on-success="handleSuccess" :before-upload="beforeUpload"/>
         </el-form-item>
       </el-form>
     </div>
@@ -171,25 +171,29 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="导入EXCEL表格" :visible.sync="dialogTableVisible" >
-  <el-table :data="ExcelTableData" border highlight-current-row style="width: 100%;margin-top:20px;" height="600">
-      <el-table-column v-for="item of tableHeader" :prop="item" :label="item" :key="item"/>
-    </el-table>
-</el-dialog>
+    <el-dialog :visible.sync="dialogTableVisible" title="导入EXCEL表格" center>
+      <el-table :data="ExcelTableData" border highlight-current-row style="width: 100%;margin-top:20px;" height="400">
+        <el-table-column v-for="item of tableHeader" :prop="item" :label="item" :key="item"/>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogTableVisible = false">取 消</el-button>
+        <el-button type="primary" @click="onSubmitExcel">确定上传</el-button>
+      </span>
 
-
-
+    </el-dialog>
 
   </div>
 </template>
 
 <script>
-import UploadExcelComponent from '@/components/UploadExcel/index.vue'   //导入上传表格的组件
+import UploadExcelComponent from '@/components/UploadExcel/index.vue' // 导入上传表格的组件
 import {
   getExaminfoList,
   getAllexamtype,
   updateExaminfo,
-  addExaminfo
+  addExaminfo,
+  addExamInfoForExcel,
+  delExaminfo
 } from '@/api/problem'
 
 import qs from 'qs'
@@ -210,6 +214,7 @@ export default {
       return typeMap[status] || '未知类型'
     }
   },
+  components: { UploadExcelComponent },
   data() {
     return {
       tableData: [],
@@ -246,12 +251,12 @@ export default {
       filename: '题目列表',
       autoWidth: true,
       bookType: 'xlsx',
-      ExcelTableData: [],  //表格数据
-      tableHeader: [],  //头部
-      dialogTableVisible:false
+      ExcelTableData: [], // 表格数据
+      tableHeader: [], // 头部
+      dialogTableVisible: false,
+      array: []
     }
   },
-  components: { UploadExcelComponent },
   created() {
     this.getProblemList()
     getAllexamtype().then(res => {
@@ -267,7 +272,64 @@ export default {
     })
   },
   methods: {
-    beforeUpload(file) {    //限制大小
+    onSubmitExcel() {
+      this.array = []
+      for (const a of this.ExcelTableData) {
+        const temp = {}
+        temp.id = null
+        temp.examtypeid = a.题目类型ID
+        temp.examtypename = null
+        temp.examtypestatus = null
+        temp.name = a.题目内容
+        temp.a = a.选项A
+        temp.b = a.选项B
+        temp.c = a.选项C
+        temp.d = a.选项D
+        temp.d = a.选项D
+        temp.correctanswer = a.答案
+        temp.explaininfo = a.解释说明
+        temp.createtime = null
+        this.array.push(temp)
+      }
+
+      var params = new URLSearchParams()
+      params.append('array', JSON.stringify(this.array))
+      addExamInfoForExcel(params)
+        .then(res => {
+          console.log(res.data)
+          this.dialogTableVisible = false
+          if (res.data === 'success') {
+            this.$message({
+              message: '恭喜你，这是一条成功消息',
+              type: 'success'
+            })
+            this.getProblemList()
+          } else {
+            this.$message.error('错了哦，上传错误')
+          }
+        })
+        .catch(e => {
+          this.$message.error('数据可能发生了重复')
+          this.dialogTableVisible = false
+        })
+
+      // let params = {
+      //   array: this.array
+      // }
+
+      // let params = {
+      //  "array":this.array
+      // }
+      // let params = this.array
+      // params = qs.stringify(qs)
+      // return
+      // addExamInfoForExcel(params)
+      // .then(res => {
+      //   console.log(res.data)
+      // })
+      // console.log(this.ExcelTableData)
+    },
+    beforeUpload(file) { // 限制大小
       const isLt1M = file.size / 1024 / 1024 < 1
 
       if (isLt1M) {
@@ -280,7 +342,7 @@ export default {
       })
       return false
     },
-    handleSuccess({ results, header }) {   //选取成功
+    handleSuccess({ results, header }) { // 选取成功
       this.ExcelTableData = results
       this.tableHeader = header
       this.dialogTableVisible = true
@@ -481,7 +543,7 @@ export default {
         id: row.id
       }
       params = qs.stringify(params)
-      deleteexamtype(params).then(res => {
+      delExaminfo(params).then(res => {
         console.log(res.data)
         this.getProblemList()
       })

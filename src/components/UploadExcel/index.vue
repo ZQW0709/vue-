@@ -1,8 +1,8 @@
 <template>
   <div>
     <input ref="excel-upload-input" class="excel-upload-input" type="file" accept=".xlsx, .xls" @change="handleClick">
-    
-  <el-button :loading="loading" style="margin-left:16px;"  type="primary" @click="handleUpload" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">导入Excel</el-button>
+
+    <el-button :loading="loading" style="margin-left:16px;" type="primary" @click="handleUpload" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">导入Excel</el-button>
   </div>
 </template>
 
