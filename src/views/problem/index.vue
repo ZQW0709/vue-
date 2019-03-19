@@ -30,8 +30,12 @@
       border
       style="width: 100%">
       <el-table-column
+        prop="id"
+        label="题目类型ID"
+        align="center" />
+      <el-table-column
         prop="name"
-        label="姓名"
+        label="题目类型名称"
         align="center" />
       <el-table-column
         label="状态"

@@ -68,7 +68,7 @@ export const constantRouterMap = [{
     component: () => import('@/views/dashboard/index'),
     name: 'Dashboard',
     meta: {
-      title: 'dashboard',
+      title: '首页',
       icon: 'dashboard',
       noCache: true,
       affix: true
@@ -88,7 +88,7 @@ export default new Router({
 export const asyncRouterMap = [
   /** When your routing table is too long, you can split it into small modules**/
   // componentsRouter,
-  nestedRouter,
+  // nestedRouter,
   // {
   //   path: '/class',
   //   component: Layout,
