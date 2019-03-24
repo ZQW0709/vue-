@@ -174,6 +174,34 @@ export const asyncRouterMap = [
       }
     }]
   },
+  {
+    path: '/statistics',
+    component: Layout,
+    redirect: 'noredirect',
+    children: [{
+      path: 'index',
+      component: () => import('@/views/statistics/index'),
+      name: 'statisticsProblem',
+      meta: {
+        title: '实时统计',
+        icon: 'edit'
+      }
+    }]
+  },
+  {
+    path: '/answer',
+    component: Layout,
+    redirect: 'noredirect',
+    children: [{
+      path: 'index',
+      component: () => import('@/views/answer/index'),
+      name: 'studentanswer',
+      meta: {
+        title: '答题统计',
+        icon: 'edit'
+      }
+    }]
+  },
 
   {
     path: '/error',

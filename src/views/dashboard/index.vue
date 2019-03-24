@@ -9,11 +9,11 @@
 
       <div class="col-md-12" >
         <h1 >
-          乐课堂互动系统
+          乐课堂系统
         </h1>
 
         <p class="tagline">
-          给你一个实时互动的平台
+          一个实时互动的平台
         </p>
         <a class="btn btn-full" @click="toPutAD">从这里开始</a>
         <!-- <video autoplay loop muted>
