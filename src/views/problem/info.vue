@@ -105,7 +105,7 @@
       <el-form
         :model="form"
         label-width="120px">
-        <el-form-item label="题目类型名称">
+        <el-form-item label="题目内容">
           <el-select
             v-model="form.examtypeid"
             placeholder="请选择">

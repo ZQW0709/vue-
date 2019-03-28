@@ -19,6 +19,10 @@
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
     </el-form>
+    <div
+          id="main"
+          class="tubiao" />
+          
     <el-table
       :data="tableData"
       border
@@ -69,6 +73,8 @@ import {
   getAllexamtype
 } from '@/api/problem'
 import qs from 'qs'
+import Vue from 'vue'
+import echarts from 'echarts'
 export default {
   data() {
     return {
@@ -81,8 +87,7 @@ export default {
       page: 1,
       limit: [10, 20, 30, 40],
       pageLimit: 10,
-      total: 0,
-      options: []
+      total: 0
     }
   },
 
@@ -100,7 +105,34 @@ export default {
       }
     })
   },
+  mounted() {
+    this.drawCharts()
+
+  },
   methods: {
+    drawCharts() {
+      const myChart = echarts.init(document.getElementById('main'))
+       // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            tooltip: {},
+            legend: {
+                data:['销量']
+            },
+            xAxis: {
+                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        }
+        myChart.setOption(option);
+    },
     onSubmit() {
       // console.log('submit!');
       let params = {
@@ -178,5 +210,9 @@ export default {
     margin-bottom: 0;
     width: 33.333%;
   }
+  .tubiao {
+  width: 100%;
+  height: 300px;
+}
 </style>
 
