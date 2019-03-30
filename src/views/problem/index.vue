@@ -124,6 +124,12 @@ import {
   addexamtype,
   deleteexamtype
 } from '@/api/problem'
+import {
+  getClassListById
+} from '@/api/student'
+// import {
+//   selectRealtimeanswer
+// } from '@/api/statistics'
 
 import qs from 'qs'
 export default {
@@ -291,7 +297,7 @@ export default {
               this.$message.error('错了哦，修改错误')
             }
           })
-          .catch(err => {
+          .catch(e => {
             this.$message.error('未知错误')
           })
       }

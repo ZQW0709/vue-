@@ -499,7 +499,7 @@ export default {
               this.$message.error('错了哦，修改错误')
             }
           })
-          .catch(err => {
+          .catch(e => {
             this.$message.error('未知错误')
           })
       } else {
@@ -533,7 +533,7 @@ export default {
               this.$message.error('错了哦，修改错误')
             }
           })
-          .catch(err => {
+          .catch(e => {
             this.$message.error('未知错误')
           })
       }

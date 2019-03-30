@@ -305,7 +305,7 @@ export default {
         // console.log(res.data)
         this.total = res.data.count
         const obj = res.data.data
-        const i = 0
+        // const i = 0
         this.tableData = []
         for (let i = 0; i < obj.length; i++) {
           const tempList = {}
@@ -398,7 +398,7 @@ export default {
               this.$message.error('错了哦，修改错误')
             }
           })
-          .catch(err => {
+          .catch(e => {
             this.$message.error('未知错误')
           })
       }

@@ -4,25 +4,25 @@
       <el-form-item label="学生姓名">
         <el-input v-model="formInline.studentname" placeholder="请输入学生姓名"/>
       </el-form-item>
-       <el-form-item label="题目类型名称">
-          <el-select
-            v-model="formInline.examtypeid"
-            placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value" />
-          </el-select>
-        </el-form-item>
+      <el-form-item label="题目类型名称">
+        <el-select
+          v-model="formInline.examtypeid"
+          placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value" />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
     </el-form>
     <div
-          id="main"
-          class="tubiao" />
-          
+      id="main"
+      class="tubiao" />
+
     <el-table
       :data="tableData"
       border
@@ -72,8 +72,11 @@ import {
 import {
   getAllexamtype
 } from '@/api/problem'
+import {
+  selectRealtimeanswer
+} from '@/api/statistics'
 import qs from 'qs'
-import Vue from 'vue'
+// import Vue from 'vue'
 import echarts from 'echarts'
 export default {
   data() {
@@ -82,8 +85,9 @@ export default {
       formInline: {
         studentname: '',
         examtypeinfo: '',
-        examtypeid:''
+        examtypeid: ''
       },
+      options: [],
       page: 1,
       limit: [10, 20, 30, 40],
       pageLimit: 10,
@@ -93,9 +97,8 @@ export default {
 
   created() {
     this.getStudentAnswer()
-    getAllexamtype().then(res => {
+    getAllexamtype().then(res => { // 获取题目类型
       const obj = res.data
-
       this.options = []
       for (let i = 0; i < obj.length; i++) {
         const tempList = {}
@@ -105,33 +108,43 @@ export default {
       }
     })
   },
-  mounted() {
-    this.drawCharts()
+  // mounted() {
+  //   this.drawCharts()
 
-  },
+  // },
   methods: {
     drawCharts() {
       const myChart = echarts.init(document.getElementById('main'))
-       // 指定图表的配置项和数据
-        var option = {
-            title: {
-                text: 'ECharts 入门示例'
-            },
-            tooltip: {},
-            legend: {
-                data:['销量']
-            },
-            xAxis: {
-                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
-            },
-            yAxis: {},
-            series: [{
-                name: '销量',
-                type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
-            }]
-        }
-        myChart.setOption(option);
+      // 指定图表的配置项和数据
+      const [examinfoname, grade] = [[], []]
+      for (const value in this.tableData) {
+        examinfoname.push(this.tableData[value].examinfoname)
+        let tempdata = this.tableData[value].grade
+        tempdata = tempdata.split('%')
+        grade.push(tempdata[0])
+      }
+      var option = {
+        tooltip: {
+          trigger: 'axis',
+          formatter: '{b}<br />{c}%'
+        },
+        xAxis: {
+          type: 'category',
+          data: examinfoname
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          data: grade,
+          type: 'line',
+          itemStyle: {
+            // 普通样式
+            color: 'rgb(64, 158, 255)' // 点的颜色
+          }
+        }]
+      }
+      myChart.setOption(option)
     },
     onSubmit() {
       // console.log('submit!');
@@ -169,6 +182,7 @@ export default {
             this.tableData.push(iterator)
             // console.log(res.data)
           }
+          this.drawCharts()
         })
     },
     handleSizeChange(val) {
@@ -179,20 +193,20 @@ export default {
       this.page = val
       this.getStudentAnswer()
     },
-    dateFormat(time) {   //* 格式化时间
-    var date=new Date(time);
-    var year=date.getFullYear();
-    /* 在日期格式中，月份是从0开始的，因此要加0
+    dateFormat(time) { //* 格式化时间
+      var date = new Date(time)
+      var year = date.getFullYear()
+      /* 在日期格式中，月份是从0开始的，因此要加0
      * 使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
      * */
-    var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
-    var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
-    var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
-    var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
-    var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
-    // 拼接
-    return year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
-}
+      var month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+      var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+      var hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+      var minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+      var seconds = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
+      // 拼接
+      return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds
+    }
   }
 }
 </script>
